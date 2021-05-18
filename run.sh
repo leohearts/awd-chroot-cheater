@@ -56,6 +56,12 @@ mkdir -p usr/share/zoneinfo
 cp -r /etc/localtime etc/ 2>/dev/null
 cp -r /usr/share/zoneinfo/ usr/share/ 2>/dev/null
 
+# load php config and plugins
+mkdir -p etc
+cp -r /etc/php etc/
+mkdir -p usr/lib
+cp -r /usr/lib/php usr/lib
+
 echo "Starting PHP server.."
 cmd="env FAKECHROOT_BASE=$target_dir LD_PRELOAD=$dir/libfakechroot.so php -S $listen_addr"
 echo $cmd
