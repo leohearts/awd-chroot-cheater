@@ -1,7 +1,7 @@
 #!/bin/bash
 
-copy_dir=/tmp/htmlbackup
-listen_addr=0.0.0.0:18888
+copy_dir="/tmp/htmlbackup"
+listen_addr="0.0.0.0:18888"
 
 
 if ! test $1
@@ -53,14 +53,16 @@ cd $target_dir
 # fix "date(): Timezone database is corrupt" error
 mkdir -p usr/lib/locale
 mkdir -p usr/share/zoneinfo
-cp -r /etc/localtime etc/ 2>/dev/null
-cp -r /usr/share/zoneinfo/ usr/share/ 2>/dev/null
+cp -r -L /etc/localtime etc/ 2>/dev/null
+cp -r -L /usr/share/zoneinfo/ usr/share/ 2>/dev/null
 
 # load php config and plugins
-mkdir -p etc
-cp -r /etc/php etc/
-mkdir -p usr/lib
-cp -r /usr/lib/php usr/lib
+php_config_path=`php -r 'echo dirname(php_ini_loaded_file());'`
+ext_path=`php -r 'echo ini_get("extension_dir");'`
+mkdir -p `eval "php -r 'echo dirname(\"${php_config_path:1:999}\");'"`
+mkdir -p `eval "php -r 'echo dirname(\"${ext_path:1:999}\");'"`
+cp -r -L $php_config_path ${php_config_path:1:999}
+cp -r -L $ext_path ${ext_path:1:999}
 
 echo "Starting PHP server.."
 cmd="env FAKECHROOT_BASE=$target_dir LD_PRELOAD=$dir/libfakechroot.so php -S $listen_addr"
