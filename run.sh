@@ -48,7 +48,7 @@ then
     echo "OK"
 fi
 
-cd $target_dir
+cd $target_dir || exit
 
 # fix "date(): Timezone database is corrupt" error
 mkdir -p usr/lib/locale
